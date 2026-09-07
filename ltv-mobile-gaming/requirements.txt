@@ -1,0 +1,7 @@
+# Instalar con:  pip install -r requirements.txt
+numpy>=2.0
+pandas>=2.2
+pyarrow>=15.0          # para leer/escribir parquet
+scikit-learn>=1.5      # modelos
+scipy>=1.13            # estadística (spearman, distribuciones)
+duckdb>=1.0            # SQL analítico sobre archivos, sin servidor

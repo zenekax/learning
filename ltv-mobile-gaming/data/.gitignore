@@ -1,0 +1,4 @@
+# Los datasets se REGENERAN con: python3 src/01_simulador.py
+# No se commitean: son derivados y pesan.
+*.parquet
+*.csv
