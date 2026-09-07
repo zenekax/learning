@@ -80,6 +80,22 @@ larga, gradient boosting con early stopping, permutation importance, y tabla de
 deciles con margen por decil. Documenta por qué `revenue_7d` es señal legítima
 y no leakage.
 
+**`06_decisiones.py` — Verificación empírica de la metodología**
+Cada decisión del script 04 se rompe a propósito y se mide el efecto. Resultados
+principales:
+
+| Experimento | Hallazgo |
+|---|---|
+| Split aleatorio vs temporal | Con un deterioro real de +95% de sesgo, la validación aleatoria reportó −3% (luz verde); la temporal, +41% |
+| Target log vs crudo | El log gana en los segmentos que suman el 98% de la población; el crudo solo en las ballenas |
+| RMSE vs margen | Los rankings de modelos no coinciden: elegir por RMSE cuesta 7% del margen alcanzable |
+| Leakage | Agregar `revenue_30d` (disponible recién el día 30) lleva el Spearman a 1.000 y el modelo a ser inejecutable |
+| Boosting vs MLP | Resultado mixto: la red gana en MAE, el boosting en RMSE y ranking |
+
+Hallazgo transversal no buscado: el MAE global casi no se movió mientras el LTV
+del segmento pago caía 4 veces. Una métrica agregada puede estar sana mientras
+el segmento sobre el que se decide se derrumba.
+
 **`05_montecarlo.py` — Riesgo de la decisión**
 Bootstrap del LTV medio por canal, Monte Carlo jerárquico separando
 incertidumbre aleatoria de incertidumbre de parámetro, análisis de sensibilidad
@@ -104,9 +120,10 @@ que después sale mal.
    solo outlier. Se acota a 3x el máximo observado en entrenamiento.
 4. **Métricas de negocio junto a las técnicas.** Spearman, lift por decil y
    margen incremental en dólares, no solo RMSE.
-5. **Gradient boosting antes que redes neuronales.** En datos tabulares de este
-   tamaño los árboles con boosting dominan. Saber cuándo *no* usar deep
-   learning es parte del criterio.
+5. **Gradient boosting antes que redes neuronales.** Se probó un MLP sobre las
+   mismas features: gana en MAE, pierde en RMSE y en ranking. Como el modelo
+   alimenta un ranking de usuarios, decide Spearman y ahí el boosting saca
+   ventaja clara. El resultado es mixto y se reporta como tal.
 
 ---
 
